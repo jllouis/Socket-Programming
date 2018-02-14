@@ -5,6 +5,7 @@
 #include <netdb.h>
 #include<arpa/inet.h>
 #include<netinet/in.h>
+#include <stdlib.h>
 
 int main(int argc, char *argv[])
 {
@@ -12,10 +13,15 @@ int main(int argc, char *argv[])
     int status; // return status of getaddrinfo, to handle failures
     char ipstr[INET6_ADDRSTRLEN]; // stores ipaddr as string
 
-    if(argc != 2) {
-        fprintf(stderr, "usage: showip hostname\n");
-        return 1;
-    }
+//    if(argc != 2) {
+//        fprintf(stderr, "usage: showip hostname\n");
+//        return 1;
+//    }
+
+    argv[1] = malloc(sizeof(char)*64);
+    printf("Enter hostname: ");
+    printf("%d\n", scanf("%s", argv[1]));
+    printf("Host name is: %s\n", argv[1]);
 
     memset(&hints, 0, sizeof hints); // make sure hints struct is clear
     hints.ai_family = AF_UNSPEC; // non-specified AF
