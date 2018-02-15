@@ -3,10 +3,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <errno.h>
-#include <sys/types.h>
+//#include <errno.h>
+//#include <sys/types.h>
 #include<netinet/in.h>
-#include <sys/socket.h>
+//#include <sys/socket.h>
 #include <netdb.h>
 #include <string.h>
 #include <arpa/inet.h>
@@ -53,5 +53,36 @@ int main(int argc, char *argv[])
             perror("client: socket");
             continue;
         }
+
+        if (connect(sockfd, p->ai_addr, p->ai_addrlen) == -1) {
+            close(sockfd);
+            perror("client: connect");
+            continue;
+        }
+
+        break;
     }
+
+    if (!p) {
+        fprintf(stderr, "client: failed to connectn\n");
+        return 2;
+    }
+
+    inet_ntop(p->ai_family, get_in_addr((struct sockaddr *) p->ai_addr), s, sizeof s);
+    printf("client: connection to %s\n", s);
+
+    freeaddrinfo(servinfo);
+
+    if ((numbytes = recv(sockfd, buf, MAXDATASIZE - 1, 0)) == -1) {
+        perror("recv");
+        exit(1);
+    }
+
+    buf[numbytes] = '\0';
+
+    printf("client: received '%s'\n", buf);
+
+    close(sockfd);
+
+    return 0;
 }
