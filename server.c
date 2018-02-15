@@ -29,8 +29,9 @@ void sigchld_handler(int s)
 void *get_in_addr(struct sockaddr *sa)
 {
     if (sa->sa_family == AF_INET)
-        return &(((struct sockaddr_in6*)sa)->sin6_addr);
+        return &(((struct sockaddr_in *) sa)->sin_addr);
 
+    return &(((struct sockaddr_in6 *) sa)->sin6_addr);
 }
 
 int main(void)
@@ -49,14 +50,14 @@ int main(void)
     hints.ai_socktype = SOCK_STREAM;
     hints.ai_flags = AI_PASSIVE;
 
-    if ((rv = getaddrinfo(NULL, PORT, &hints, &servinfo)) !=0)
+    if ((rv = getaddrinfo(NULL, PORT, &hints, &servinfo)) != 0)
     {
         fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(rv));
         return 1;
     }
 
     // loop through results and bind to first possible
-    for (p = servinfo; p != NULL; p=p->ai_next)
+    for (p = servinfo; p != NULL; p = p->ai_next)
     {
         if ((sockfd = socket(p->ai_family, p->ai_socktype, p->ai_protocol)) == -1)
         {
@@ -96,7 +97,7 @@ int main(void)
     sa.sa_handler = sigchld_handler;
     sigemptyset(&sa.sa_mask);
     sa.sa_flags = SA_RESTART;
-    if (sigaction(SIGCHLD, &sa, NULL) == 01)
+    if (sigaction(SIGCHLD, &sa, NULL) == -1)
     {
         perror("sigaction");
         exit(1);

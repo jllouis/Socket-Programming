@@ -46,7 +46,7 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    // loop thorugh results and connect to first possible
+    // loop through results and connect to first possible
     for (p = servinfo; p != NULL; p = p->ai_next) {
         if ((sockfd = socket(p->ai_family, p->ai_socktype, p->ai_protocol)) == -1)
         {
@@ -64,7 +64,7 @@ int main(int argc, char *argv[])
     }
 
     if (!p) {
-        fprintf(stderr, "client: failed to connectn\n");
+        fprintf(stderr, "client: failed to connect\n");
         return 2;
     }
 
